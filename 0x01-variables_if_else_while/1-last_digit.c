@@ -4,14 +4,14 @@
 
 /**
  *main - Display the last digit of the random number
- **@n: first operand
+ **@n: int variable
  *
  *Return: Always 0
  */
 
 int main(void)
 {
-	int n, last_digit;
+	int n;
 
 	srand(time(0));
 	n = rand() - RAND_MAX / 2;
