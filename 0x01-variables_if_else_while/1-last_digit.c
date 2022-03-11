@@ -4,7 +4,6 @@
 
 /**
  *main - Display the last digit of the random number
- *@n: int variable
  *
  *Return: Always 0
  */
