@@ -2,7 +2,7 @@
 
 /**
  *main - Print all single digit numbers of base 10 starting from 0,
- * by using only putchar function without char variables
+ *by using only putchar function without char variables
  *
  *Return: Always 0
  */

@@ -2,7 +2,6 @@
 
 /**
  *main - Print the lowercase alphabet in inverse
- *@letter: first variable
  *
  *Return: Always 0
  */
