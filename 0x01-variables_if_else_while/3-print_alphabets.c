@@ -2,7 +2,6 @@
 
 /**
  *main - Prints the alphabet in lowercase, and then in uppercase
- *@letter: first operand
  *
  *Return: Always 0
  */

@@ -3,7 +3,6 @@
 /**
  *main - Print all single digit numbers of base 10 starting from 0,
  * by using only putchar function without char variables
- *@n: first operand
  *
  *Return: Always 0
  */
