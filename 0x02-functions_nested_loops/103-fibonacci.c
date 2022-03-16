@@ -11,14 +11,14 @@ int main(void)
 	unsigned long fib0 = 0, fib1 = 1, fibsum;
 	float sum_tot;
 
-	while(1)
+	while (1)
 	{
 		fibsum = fib0 + fib1;
-		if(fibsum > 4000000)
+		if (fibsum > 4000000)
 			break;
 		if ((fibsum % 2) == 0)
 			sum_tot += fibsum;
-	
+
 		fib0 = fib1;
 		fib1 = fibsum;
 	}
