@@ -1,15 +1,21 @@
-# 0-rest_to_98
+# **0x05-pointers_arrays_strings**
+
+## 0-rest_to_98
  * C function that takes a pointer to an int as parameter and updates the value it points to 98.
 
-# 1-swap.c
+## 1-swap.c
  * C function that swaps the values of 2 integers.
 
-# 2-strlen .c
+## 2-strlen .c
  * C function that returns the length of a string.
 
-# 3-puts.c
+## 3-puts.c
  * C function that prints a string.
 
 ## 4-print_rev.c
  * C function that printd a string in reverse, following by a new line.
+
+## 5-rev_string.c
+ * Function that reverses a string.
+
 
