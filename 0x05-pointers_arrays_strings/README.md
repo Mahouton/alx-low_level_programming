@@ -22,3 +22,6 @@
  * Function that prints every other character of a string, starting with
  the firs character.
 
+## 7-puts_half.c
+ * Function that prints half of a string.
+
