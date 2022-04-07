@@ -3,6 +3,21 @@
 #include <stdio.h>
 
 /**
+ * Error - print Error with _putchar.
+ * Return: void
+ */
+void Error(void)
+{
+	_putchar('E');
+	_putchar('r');
+	_putchar('r');
+	_putchar('o');
+	_putchar('r');
+	_putchar('\n');
+	exit(98);
+}
+
+/**
  * find_len - Finds the length of a string.
  * @str: The string to be measured.
  *
@@ -74,13 +89,7 @@ int get_digit(char c)
 
 	if (digit < 0 || digit > 9)
 	{
-		_putchar('E');
-		_putchar('r');
-		_putchar('r');
-		_putchar('o');
-		_putchar('r');
-		_putchar('\n');
-		exit(98);
+		Error();
 	}
 
 	return (digit);
@@ -120,15 +129,7 @@ void get_prod(char *prod, char *mult, int digit, int zeroes)
 	for (; mult_len >= 0; mult_len--, mult--, prod--)
 	{
 		if (*mult < '0' || *mult > '9')
-		{
-			_putchar('E');
-			_putchar('r');
-			_putchar('r');
-			_putchar('o');
-			_putchar('r');
-			_putchar('\n');
-			exit(98);
-		}
+			Error();
 
 		num = (*mult - '0') * digit;
 		num += tens;
@@ -197,15 +198,7 @@ int main(int argc, char *argv[])
 	int size, index, digit, zeroes = 0;
 
 	if (argc != 3)
-	{
-		_putchar('E');
-		_putchar('r');
-		_putchar('r');
-		_putchar('o');
-		_putchar('r');
-		_putchar('\n');
-		exit(98);
-	}
+		Error();
 
 	if (*(argv[1]) == '0')
 		argv[1] = iterate_zeroes(argv[1]);
