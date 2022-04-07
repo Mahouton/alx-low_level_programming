@@ -1,204 +1,148 @@
-#include <stdlib.h>
 #include "main.h"
+#include <stdlib.h>
+
 
 /**
- * _prt - print string followed by newline
- * @s: string to print
+ * initDigitArray - allocates and sets to 0 an array to contain the digits
+ *   of a base 10 number
+ *
+ * @size: array size
+ * Return: pointer to initialized array, or NULL on failure
  */
-void _prt(char *s)
+unsigned int *initDigitArray(size_t size)
 {
-	while (*s != '\0')
-		_putchar(*s++);
-	_putchar('\n');
+	unsigned int *arr = NULL;
+	size_t i;
+
+	arr = malloc(sizeof(unsigned int) * size);
+	if (!arr)
+		return (NULL);
+
+	for (i = 0; i < size; i++)
+		arr[i] = 0;
+
+	return (arr);
 }
 
-/**
- * _realloc - Re-allocate memory for a larger or smaller size
- * @ptr: Pointer to the old memory block
- * @old_size: The old size of the memory block
- * @new_size: The new size of the memory block being created
- *
- * Return: Pointer to new memory
- */
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
-{
-	void *space;
-	char *spacecpy, *ptrcpy;
-	unsigned int i;
 
-	if (new_size == 0 && ptr != NULL)
+/**
+ * stringIntMultiply - saved multiplication of digits
+ *
+ * @prod_digits: array to store digits of product
+ * @n1_digits: string containing multiplicand digits in ASCII
+ * @n2_digits: string containing multiplier digits in ASCII
+ * @n1_len: amount of digits in multiplicand
+ * @n2_len: amount of digits in multiplier
+ */
+void stringIntMultiply(unsigned int *prod_digits, char *n1_digits,
+		       char *n2_digits, size_t n1_len, size_t n2_len)
+{
+	int i, j, sum;
+	unsigned char digit1, digit2;
+
+	if (prod_digits == NULL || n1_digits == NULL || n2_digits == NULL)
+		return;
+
+	for (i = n1_len - 1; i >= 0; i--)
 	{
-		free(ptr);
-		return (NULL);
+		sum = 0;
+		digit1 = n1_digits[i] - '0';
+
+		for (j = n2_len - 1; j >= 0; j--)
+		{
+			digit2 = n2_digits[j] - '0';
+
+			sum += prod_digits[i + j + 1] + (digit1 * digit2);
+
+			prod_digits[i + j + 1] = sum % 10;
+
+			sum /= 10;
+		}
+
+		if (sum > 0)
+			prod_digits[i + j + 1] += sum;
 	}
-	if (new_size == old_size)
-		return (ptr);
-	/* regardless, we need to make new space of new_size */
-	space = malloc(new_size);
-	if (space == NULL)
-		return (NULL);
-	/* if ptr is null, return space without copying */
-	if (ptr == NULL)
-		return (space);
-	/* copy old contents into new space */
-	spacecpy = space;
-	ptrcpy = ptr;
-	for (i = 0; i < old_size && i < new_size; i++)
-		spacecpy[i] = ptrcpy[i];
-	free(ptr);
-	return (space);
 }
 
+
 /**
- * _calloc - Allocate memory and initalize space to zero
- * @nmemb: number of elements
- * @size: size of bytes
+ * stringIsPosInt - validates if string represents a positive integer
  *
- * Return: pointer to memory space, or NULL
+ * @s: string to test
+ * Return: 1 if true, 0 if false
  */
-void *_calloc(unsigned int nmemb, unsigned int size)
+int stringIsPosInt(char *s)
 {
-	void *space;
-	char *memset;
-	unsigned int i;
-
-	if (nmemb == 0 || size == 0)
-		return (NULL);
-	space = malloc(nmemb * size);
-	if (space == NULL)
-		return (NULL);
-
-	memset = space;
-	for (i = 0 ; i < nmemb * size; i++)
-	{
-		*(memset + i) = 0;
-	}
-
-	return (space);
-}
-
-/**
- * _notdigit - check to see if string is only digits
- * @s: string to check
- *
- * Return: 0 if only digits, 1 if non digit chars
- */
-int _notdigit(char *s)
-{
-	for ( ; *s; s++)
-		if (*s < '0' || *s > '9')
-			return (1);
-	return (0);
-}
-
-/**
- * rev_ - Reverse a string in place
- * @s: string to reverse
- */
-void rev_(char *s)
-{
-	char tmp;
-	int i, j;
+	size_t i;
 
 	for (i = 0; s[i]; i++)
-		;
-	i--;
-	for (j = 0; j <= i / 2; j++)
 	{
-		tmp = s[j];
-		s[j] = s[i - j];
-		s[i - j] = tmp;
+		if (s[i] < '0' || s[i] > '9')
+			return (0);
 	}
+
+	return (1);
 }
 
-/**
- * _addup - add up integer array
- * @arr: array to count
- * @n: number of ints to count
- * @place: which tens place to count
- *
- * Return: result of addition
- */
-int _addup(int *arr, int n, int place)
-{
-	int sum, i;
 
-	for (i = 0, sum = 0; i < n; i++)
-	{
-		sum += arr[n * i + place];
-	}
-	return (sum);
+/**
+ * error - error return
+ *
+ * @status: error code to exit with
+ */
+void error(int status)
+{
+	_putchar('E');
+	_putchar('r');
+	_putchar('r');
+	_putchar('o');
+	_putchar('r');
+	_putchar('\n');
+	exit(status);
 }
 
-/**
- * cut_zeros - cut off my zeros
- * @s: string to cut
- *
- * Return: length of s
- */
-int cut_zeros(char *s)
-{
-	int i;
-
-	i = 0;
-	while (*s != '\0')
-	{
-		i++;
-		s++;
-	}
-	i--;
-	s--;
-	while (*s == '0' && i > 0)
-	{
-		*s = '\0';
-		s--;
-		i--;
-	}
-	return (i);
-}
 
 /**
- * main - multiple two numbers and print the result
- * @argc: Number of arguments
- * @argv: Argument strings
+ * main - entry point
  *
- * Return: 0
+ * @argc: number of commmand line arguments
+ * @argv: array of commmand line arguments
+ * Return: 0 on success, 98 on failure
  */
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-	int *calc;
-	char *final;
-	unsigned int l1, l2, lsum, i, j, ntmp, rolltmp;
+	size_t i, av1_len, av2_len, prod_len;
+	unsigned int *prod_digits = NULL;
 
-	if (argc != 3)
-		_prt("Error"), exit(98);
-	if (_notdigit(argv[1]) || _notdigit(argv[2]))
-		_prt("Error"), exit(98);
-	for (l1 = 0; argv[1][l1]; l1++)
-		;
-	for (l2 = 0; argv[2][l2]; l2++)
-		;
-	lsum = l1 + l2, final = malloc((lsum + 2) * sizeof(*final));
-	calc = _calloc(lsum * lsum, sizeof(int));
-	if (calc == NULL)
-		_prt("Error"), exit(98);
-	rev_(argv[1]), rev_(argv[2]);
-	for (i = 0; i < l1; i++)
-	{
-		rolltmp = 0, ntmp = 0;
-		for (j = 0; j < l2; j++)
-		{
-			ntmp = (argv[1][i] - '0') * (argv[2][j] - '0') + rolltmp;
-			calc[i * lsum + j + i] = ntmp % 10, rolltmp = ntmp / 10;
-		}
-		for (; j < l2 + i; j++, rolltmp /= 10)
-			calc[i * lsum + j + i] = rolltmp % 10;
-		while (rolltmp)
-			calc[i * lsum + j + i] = rolltmp % 10, rolltmp /= 10, j++;
-	}
-	for (i = 0, rolltmp = 0; i < lsum; i++, rolltmp /= 10)
-		rolltmp += _addup(calc, lsum, i), final[i] = rolltmp % 10 + '0';
-	final[i + 1] = '\0', i = cut_zeros(final), rev_(final);
-	final[i + 2] = '\0', _prt(final), free(calc), free(final);
+	if (argc != 3 || !stringIsPosInt(argv[1]) ||
+	    !stringIsPosInt(argv[2]))
+		error(98);
+
+	for (i = 0, av1_len = 0; argv[1][i]; i++)
+		av1_len++;
+
+	for (i = 0, av2_len = 0; argv[2][i]; i++)
+		av2_len++;
+
+	prod_len = av1_len + av2_len;
+	prod_digits = initDigitArray(prod_len);
+	if (prod_digits == NULL)
+		error(98);
+
+	stringIntMultiply(prod_digits, argv[1], argv[2], av1_len, av2_len);
+
+	/* omit leading zeroes */
+	for (i = 0; !prod_digits[i] && i < prod_len; i++)
+	{}
+
+	if (i == prod_len)
+		_putchar('0');
+
+	for (; i < prod_len; i++)
+		_putchar(prod_digits[i] + '0');
+	_putchar('\n');
+
+	free(prod_digits);
+
 	return (0);
 }
