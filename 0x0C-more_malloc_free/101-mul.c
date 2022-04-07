@@ -1,234 +1,204 @@
-#include "main.h"
 #include <stdlib.h>
+#include "main.h"
 
 /**
- * Error - print Error with _putchar.
- * Return: void
+ * _prt - print string followed by newline
+ * @s: string to print
  */
-void Error(void)
+void _prt(char *s)
 {
-	_putchar('E');
-	_putchar('r');
-	_putchar('r');
-	_putchar('o');
-	_putchar('r');
+	while (*s != '\0')
+		_putchar(*s++);
 	_putchar('\n');
-	exit(98);
 }
 
 /**
- * find_len - Finds the length of a string.
- * @str: The string to be measured.
+ * _realloc - Re-allocate memory for a larger or smaller size
+ * @ptr: Pointer to the old memory block
+ * @old_size: The old size of the memory block
+ * @new_size: The new size of the memory block being created
  *
- * Return: The length of the string.
+ * Return: Pointer to new memory
  */
-int find_len(char *str)
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	int len = 0;
+	void *space;
+	char *spacecpy, *ptrcpy;
+	unsigned int i;
 
-	while (*str++)
-		len++;
-
-	return (len);
-}
-
-/**
- * create_xarray - Creates an array of chars and initializes it with
- *                 the character 'x'. Adds a terminating null byte.
- * @size: The size of the array to be initialized.
- *
- * Description: If there is insufficient space, the
- *              function exits with a status of 98.
- * Return: A pointer to the array.
- */
-char *create_xarray(int size)
-{
-	char *array;
-	int index;
-
-	array = malloc(sizeof(char) * size);
-
-	if (array == NULL)
-		exit(98);
-
-	for (index = 0; index < (size - 1); index++)
-		array[index] = 'x';
-
-	array[index] = '\0';
-
-	return (array);
-}
-
-/**
- * iterate_zeroes - Iterates through a string of numbers containing
- *                  leading zeroes until it hits a non-zero number.
- * @str: The string of numbers to be iterate through.
- *
- * Return: A pointer to the next non-zero element.
- */
-char *iterate_zeroes(char *str)
-{
-	while (*str && *str == '0')
-		str++;
-
-	return (str);
-}
-
-/**
- * get_digit - Converts a digit character to a corresponding int.
- * @c: The character to be converted.
- *
- * Description: If c is a non-digit, the function
- *              exits with a status of 98.
- * Return: The converted int.
- */
-int get_digit(char c)
-{
-	int digit = c - '0';
-
-	if (digit < 0 || digit > 9)
+	if (new_size == 0 && ptr != NULL)
 	{
-		Error();
+		free(ptr);
+		return (NULL);
+	}
+	if (new_size == old_size)
+		return (ptr);
+	/* regardless, we need to make new space of new_size */
+	space = malloc(new_size);
+	if (space == NULL)
+		return (NULL);
+	/* if ptr is null, return space without copying */
+	if (ptr == NULL)
+		return (space);
+	/* copy old contents into new space */
+	spacecpy = space;
+	ptrcpy = ptr;
+	for (i = 0; i < old_size && i < new_size; i++)
+		spacecpy[i] = ptrcpy[i];
+	free(ptr);
+	return (space);
+}
+
+/**
+ * _calloc - Allocate memory and initalize space to zero
+ * @nmemb: number of elements
+ * @size: size of bytes
+ *
+ * Return: pointer to memory space, or NULL
+ */
+void *_calloc(unsigned int nmemb, unsigned int size)
+{
+	void *space;
+	char *memset;
+	unsigned int i;
+
+	if (nmemb == 0 || size == 0)
+		return (NULL);
+	space = malloc(nmemb * size);
+	if (space == NULL)
+		return (NULL);
+
+	memset = space;
+	for (i = 0 ; i < nmemb * size; i++)
+	{
+		*(memset + i) = 0;
 	}
 
-	return (digit);
+	return (space);
 }
 
 /**
- * get_prod - Multiplies a string of numbers by a single digit.
- * @prod: The buffer to store the result.
- * @mult: The string of numbers.
- * @digit: The single digit.
- * @zeroes: The necessary number of leading zeroes.
+ * _notdigit - check to see if string is only digits
+ * @s: string to check
  *
- * Description: If mult contains a non-digit, the function
- *              exits with a status value of 98.
+ * Return: 0 if only digits, 1 if non digit chars
  */
-void get_prod(char *prod, char *mult, int digit, int zeroes)
+int _notdigit(char *s)
 {
-	int mult_len, num, tens = 0;
-
-	mult_len = find_len(mult) - 1;
-	mult += mult_len;
-
-	while (*prod)
-	{
-		*prod = 'x';
-		prod++;
-	}
-
-	prod--;
-
-	while (zeroes--)
-	{
-		*prod = '0';
-		prod--;
-	}
-
-	for (; mult_len >= 0; mult_len--, mult--, prod--)
-	{
-		if (*mult < '0' || *mult > '9')
-			Error();
-
-		num = (*mult - '0') * digit;
-		num += tens;
-		*prod = (num % 10) + '0';
-		tens = num / 10;
-	}
-
-	if (tens)
-		*prod = (tens % 10) + '0';
+	for ( ; *s; s++)
+		if (*s < '0' || *s > '9')
+			return (1);
+	return (0);
 }
 
 /**
- * add_nums - Adds the numbers stored in two strings.
- * @final_prod: The buffer storing the running final product.
- * @next_prod: The next product to be added.
- * @next_len: The length of next_prod.
+ * rev_ - Reverse a string in place
+ * @s: string to reverse
  */
-void add_nums(char *final_prod, char *next_prod, int next_len)
+void rev_(char *s)
 {
-	int num, tens = 0;
+	char tmp;
+	int i, j;
 
-	while (*(final_prod + 1))
-		final_prod++;
-
-	while (*(next_prod + 1))
-		next_prod++;
-
-	for (; *final_prod != 'x'; final_prod--)
+	for (i = 0; s[i]; i++)
+		;
+	i--;
+	for (j = 0; j <= i / 2; j++)
 	{
-		num = (*final_prod - '0') + (*next_prod - '0');
-		num += tens;
-		*final_prod = (num % 10) + '0';
-		tens = num / 10;
-
-		next_prod--;
-		next_len--;
+		tmp = s[j];
+		s[j] = s[i - j];
+		s[i - j] = tmp;
 	}
-
-	for (; next_len >= 0 && *next_prod != 'x'; next_len--)
-	{
-		num = (*next_prod - '0');
-		num += tens;
-		*final_prod = (num % 10) + '0';
-		tens = num / 10;
-
-		final_prod--;
-		next_prod--;
-	}
-
-	if (tens)
-		*final_prod = (tens % 10) + '0';
 }
 
 /**
- * main - Multiplies two positive numbers.
- * @argv: The number of arguments passed to the program.
- * @argc: An array of pointers to the arguments.
+ * _addup - add up integer array
+ * @arr: array to count
+ * @n: number of ints to count
+ * @place: which tens place to count
  *
- * Description: If the number of arguments is incorrect or one number
- *              contains non-digits, the function exits with a status of 98.
- * Return: Always 0.
+ * Return: result of addition
+ */
+int _addup(int *arr, int n, int place)
+{
+	int sum, i;
+
+	for (i = 0, sum = 0; i < n; i++)
+	{
+		sum += arr[n * i + place];
+	}
+	return (sum);
+}
+
+/**
+ * cut_zeros - cut off my zeros
+ * @s: string to cut
+ *
+ * Return: length of s
+ */
+int cut_zeros(char *s)
+{
+	int i;
+
+	i = 0;
+	while (*s != '\0')
+	{
+		i++;
+		s++;
+	}
+	i--;
+	s--;
+	while (*s == '0' && i > 0)
+	{
+		*s = '\0';
+		s--;
+		i--;
+	}
+	return (i);
+}
+
+/**
+ * main - multiple two numbers and print the result
+ * @argc: Number of arguments
+ * @argv: Argument strings
+ *
+ * Return: 0
  */
 int main(int argc, char *argv[])
 {
-	char *final_prod, *next_prod;
-	int size, index, digit, zeroes = 0;
+	int *calc;
+	char *final;
+	unsigned int l1, l2, lsum, i, j, ntmp, rolltmp;
 
 	if (argc != 3)
-		Error();
-
-	if (*(argv[1]) == '0')
-		argv[1] = iterate_zeroes(argv[1]);
-	if (*(argv[2]) == '0')
-		argv[2] = iterate_zeroes(argv[2]);
-	if (*(argv[1]) == '\0' || *(argv[2]) == '\0')
+		_prt("Error"), exit(98);
+	if (_notdigit(argv[1]) || _notdigit(argv[2]))
+		_prt("Error"), exit(98);
+	for (l1 = 0; argv[1][l1]; l1++)
+		;
+	for (l2 = 0; argv[2][l2]; l2++)
+		;
+	lsum = l1 + l2, final = malloc((lsum + 2) * sizeof(*final));
+	calc = _calloc(lsum * lsum, sizeof(int));
+	if (calc == NULL)
+		_prt("Error"), exit(98);
+	rev_(argv[1]), rev_(argv[2]);
+	for (i = 0; i < l1; i++)
 	{
-		_putchar('0');
-		_putchar('\n');
-		return (0);
+		rolltmp = 0, ntmp = 0;
+		for (j = 0; j < l2; j++)
+		{
+			ntmp = (argv[1][i] - '0') * (argv[2][j] - '0') + rolltmp;
+			calc[i * lsum + j + i] = ntmp % 10, rolltmp = ntmp / 10;
+		}
+		for (; j < l2 + i; j++, rolltmp /= 10)
+			calc[i * lsum + j + i] = rolltmp % 10;
+		while (rolltmp)
+			calc[i * lsum + j + i] = rolltmp % 10, rolltmp /= 10, j++;
 	}
-
-	size = find_len(argv[1]) + find_len(argv[2]);
-	final_prod = create_xarray(size + 1);
-	next_prod = create_xarray(size + 1);
-
-	for (index = find_len(argv[2]) - 1; index >= 0; index--)
-	{
-		digit = get_digit(*(argv[2] + index));
-		get_prod(next_prod, argv[1], digit, zeroes++);
-		add_nums(final_prod, next_prod, size - 1);
-	}
-	for (index = 0; final_prod[index]; index++)
-	{
-		if (final_prod[index] != 'x')
-			_putchar(final_prod[index]);
-	}
-	_putchar('\n');
-
-	free(next_prod);
-	free(final_prod);
-
+	for (i = 0, rolltmp = 0; i < lsum; i++, rolltmp /= 10)
+		rolltmp += _addup(calc, lsum, i), final[i] = rolltmp % 10 + '0';
+	final[i + 1] = '\0', i = cut_zeros(final), rev_(final);
+	final[i + 2] = '\0', _prt(final), free(calc), free(final);
 	return (0);
 }
