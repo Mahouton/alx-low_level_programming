@@ -11,7 +11,8 @@ size_t print_list(const list_t *h)
 {
 	int n = 0;
 
-	do {
+	while (h != NULL)
+	{
 		if (h->str == NULL)
 		{
 			printf("[0] (nil)\n");
@@ -20,7 +21,6 @@ size_t print_list(const list_t *h)
 			printf("[%u] %s\n", h->len, h->str);
 		h = h->next;
 		n++;
-	} while (h != NULL);
+	}
 	return (n);
 }
-
